@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+/* Same tokens as the app (Gutter/DESIGN.md): ink ramp, hairlines, one paper-white accent. */
+@theme {
+  --color-ink-0: #0a0a0a;
+  --color-ink-1: #111111;
+  --color-ink-2: #181818;
+  --color-ink-3: #222222;
+  --color-line: rgb(255 255 255 / 0.08);
+  --color-line-strong: rgb(255 255 255 / 0.15);
+  --color-text: #ededed;
+  --color-muted: #8a8a8a;
+  --color-faint: #555555;
+  --color-paper: #f2f1ec;
+  --color-danger: #c8584e;
+  --color-violet: #8e5cff;
+
+  --font-display: "Bahnschrift", "DIN Alternate", "Barlow", "Segoe UI", system-ui, sans-serif;
+  --font-sans: "Segoe UI Variable Text", "Segoe UI", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Cascadia Mono", "Cascadia Code", Consolas, "SF Mono", Menlo, monospace;
+
+  --radius-ctl: 4px;
+  --radius-pane: 6px;
+}
+
+html { color-scheme: dark; }
+body {
+  background: var(--color-ink-0);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: rgb(242 241 236 / 0.85); color: #0a0a0a; }
+
+/* ───────── motion (150–250 ms for UI; the editor mock loops because it's a demo of the product) ───────── */
+
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.rise { animation: rise 520ms cubic-bezier(.2,.7,.2,1) both; }
+.d1 { animation-delay: 60ms; } .d2 { animation-delay: 120ms; } .d3 { animation-delay: 180ms; } .d4 { animation-delay: 260ms; } .d5 { animation-delay: 360ms; }
+
+/* scroll reveal, toggled by <Reveal> */
+.reveal { opacity: 0; transform: translateY(10px); transition: opacity 420ms ease-out, transform 480ms cubic-bezier(.2,.7,.2,1); }
+.reveal.in { opacity: 1; transform: none; }
+
+/* editor mock: a tall panel scrolling down, like Gutter's eased pan */
+@keyframes pan { 0%, 8% { transform: translateY(0); } 45%, 55% { transform: translateY(-46%); } 92%, 100% { transform: translateY(0); } }
+.pan { animation: pan 9s cubic-bezier(.45,0,.55,1) infinite; }
+@keyframes pan-bg { 0%, 8% { transform: translateY(0) scale(1.15); } 45%, 55% { transform: translateY(-18%) scale(1.15); } 92%, 100% { transform: translateY(0) scale(1.15); } }
+.pan-bg { animation: pan-bg 9s cubic-bezier(.45,0,.55,1) infinite; }
+
+/* playhead sweeping the timeline */
+@keyframes sweep { from { left: 0%; } to { left: 100%; } }
+.sweep { animation: sweep 9s linear infinite; }
+
+/* caption: the spoken word lights up in turn */
+@keyframes word { 0%, 100% { color: #fff; } 8%, 30% { color: #ffd43b; } 33% { color: #fff; } }
+.word { animation: word 3s steps(1, end) infinite; }
+
+/* voice bars breathing on the A1 track */
+@keyframes bar { 0%, 100% { transform: scaleY(.45); } 50% { transform: scaleY(1); } }
+.bar { animation: bar 1.4s ease-in-out infinite; transform-origin: center; }
+
+/* transition tiles: A → B, each its own way */
+@keyframes t-mix { 0%, 25% { opacity: 0; } 60%, 100% { opacity: 1; } }
+@keyframes t-push-a { 0%, 25% { transform: none; } 60%, 100% { transform: translateY(-100%); } }
+@keyframes t-push-b { 0%, 25% { transform: translateY(100%); } 60%, 100% { transform: none; } }
+@keyframes t-slide { 0%, 25% { transform: translateX(100%); } 60%, 100% { transform: none; } }
+@keyframes t-zoom-a { 0%, 25% { transform: scale(1); opacity: 1; } 60%, 100% { transform: scale(1.4); opacity: 0; } }
+@keyframes t-iris { 0%, 25% { clip-path: circle(0% at 50% 50%); } 60%, 100% { clip-path: circle(75% at 50% 50%); } }
+@keyframes t-flash { 0%, 25% { opacity: 0; } 42% { opacity: 1; } 60%, 100% { opacity: 0; } }
+@keyframes t-swap { 0%, 41% { opacity: 0; } 42%, 100% { opacity: 1; } }
+.t-run { animation-duration: 2.6s; animation-iteration-count: infinite; animation-timing-function: cubic-bezier(.45,0,.55,1); animation-fill-mode: both; }
+
+/* progress bar like Export / the installer */
+@keyframes fill { 0% { width: 0; } 70%, 100% { width: 100%; } }
+@keyframes shine { from { transform: translateX(-120%); } to { transform: translateX(520%); } }
+.fill { animation: fill 4.5s cubic-bezier(.3,.6,.2,1) infinite; }
+.shine { animation: shine 1.3s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+
+/* docs prose */
+.docs-body code, .docs-body kbd { font-family: var(--font-mono); font-size: 0.86em; background: var(--color-ink-2); border: 1px solid var(--color-line); border-radius: 3px; padding: 0.1em 0.35em; color: var(--color-text); }
+.docs-body pre { font-family: var(--font-mono); font-size: 12.5px; background: var(--color-ink-1); border: 1px solid var(--color-line); border-radius: 6px; padding: 14px 16px; overflow-x: auto; color: var(--color-text); }
+.docs-body ol { list-style: decimal; padding-left: 1.3rem; display: flex; flex-direction: column; gap: 0.4rem; }
+.docs-body ul { list-style: disc; padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.docs-body li::marker { color: var(--color-faint); }
+.docs-body b { color: var(--color-text); font-weight: 600; }
+.docs-body a { color: var(--color-text); text-decoration: underline; text-decoration-color: var(--color-faint); text-underline-offset: 3px; }
+.docs-body a:hover { text-decoration-color: var(--color-text); }
